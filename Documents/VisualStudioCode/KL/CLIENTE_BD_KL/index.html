@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es" class="bg-slate-50/50">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Vehículos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="text-slate-700 antialiased font-sans max-w-5xl mx-auto px-4 py-12">
+
+    <header class="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Panel de Control de Flota</h1>
+            <p class="text-sm text-slate-500">Visualiza y administra los vehículos disponibles en el sistema.</p>
+        </div>
+        <div>
+            <button onclick="cargarVehiculos()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg shadow-sm transition">
+                Ver todos los vehículos
+            </button>
+        </div>
+    </header>
+
+    <div class="space-y-8">
+
+        <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+            <div class="px-5 py-3.5 border-b border-slate-200 bg-slate-50/70">
+                <h2 class="text-sm font-semibold text-slate-800">Catálogo de Vehículos</h2>
+            </div>
+            <div class="p-6">
+                <div id="contenedor-vehiculos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <p class="text-sm text-slate-400 col-span-full text-center py-8">Presiona "Ver todos los vehículos" para renderizar la lista.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <section class="lg:col-span-2 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="px-5 py-3.5 border-b border-slate-200 bg-slate-50/70">
+                        <h2 class="text-sm font-semibold text-slate-800">Registrar nuevo vehículo</h2>
+                    </div>
+                    <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Modelo</label>
+                            <input type="text" id="modelo" placeholder="Ej. Toyota Corolla" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Descripción</label>
+                            <input type="text" id="descripcion" placeholder="Detalles mecánicos o de equipamiento" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Categoría</label>
+                            <input type="text" id="categoria" placeholder="Ej. SUV, Sedán" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Precio por Día</label>
+                                <input type="number" step="0.01" id="precioPorDia" placeholder="0.00" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Disponibles</label>
+                                <input type="number" id="unidadesDisponibles" placeholder="0" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3.5 bg-slate-50/50 border-t border-slate-200 flex flex-col gap-2">
+                    <button onclick="crearVehiculo()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition shadow-sm self-start">
+                        Guardar registro
+                    </button>
+                    <div id="msg-crear" class="text-xs font-medium mt-1"></div>
+                </div>
+            </section>
+
+            <div class="space-y-8">
+                
+                <section class="bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <div class="px-5 py-3.5 border-b border-slate-200 bg-slate-50/70">
+                        <h2 class="text-sm font-semibold text-slate-800">Filtros de Búsqueda</h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-slate-500">Buscar por ID</label>
+                            <div class="flex gap-2">
+                                <input type="number" id="buscar-id" placeholder="ID" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition">
+                                <button onclick="buscarPorId()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg border border-slate-200">🔍</button>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-medium text-slate-500">Buscar por Modelo</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="buscar-modelo" placeholder="Nombre del modelo" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition">
+                                <button onclick="buscarPorModelo()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg border border-slate-200">🔍</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-white border border-slate-200 rounded-xl shadow-sm">
+                    <div class="px-5 py-3.5 border-b border-slate-200 bg-slate-50/70">
+                        <h2 class="text-sm font-semibold text-red-800">Dar de baja vehículo</h2>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex gap-2">
+                            <input type="number" id="eliminar-id" placeholder="ID del vehículo" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-400 transition">
+                            <button onclick="eliminarVehiculo()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition shadow-sm">
+                                Eliminar
+                            </button>
+                        </div>
+                        <p id="msg-eliminar" class="text-xs font-medium text-red-600 mt-2"></p>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        <section class="bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div class="px-5 py-3.5 border-b border-slate-200 bg-slate-50/70">
+                <h2 class="text-sm font-semibold text-slate-800">Modificar datos existentes (PUT)</h2>
+            </div>
+            <div class="p-5 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-1">ID del objetivo</label>
+                        <input type="number" id="upd-id" placeholder="ID" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-xs font-medium text-slate-500 mb-1">Nuevo Modelo</label>
+                        <input type="text" id="upd-modelo" placeholder="Modelo corregido" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium text-slate-500 mb-1">Nueva Descripción</label>
+                        <input type="text" id="upd-descripcion" placeholder="Descripción corregida" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-1">Nueva Categoría</label>
+                        <input type="text" id="upd-categoria" placeholder="Categoría corregida" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-1">Nuevo Precio por Día</label>
+                        <input type="number" step="0.01" id="upd-precioPorDia" placeholder="0.00" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-500 mb-1">Nuevas Unidades</label>
+                        <input type="number" id="upd-unidadesDisponibles" placeholder="0" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition">
+                    </div>
+                </div>
+            </div>
+            <div class="px-5 py-3.5 bg-slate-50/50 border-t border-slate-200 flex flex-col gap-2">
+                <button onclick="actualizarVehiculo()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-medium rounded-lg transition shadow-sm self-start">
+                    Modificar datos
+                </button>
+                <div id="msg-actualizar" class="text-xs font-medium mt-1"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
